@@ -14,78 +14,100 @@
 // method resourcePath() from ResourcePath.hpp
 //
 
-#include <SFML/Audio.hpp>
+#include <iostream>
 #include <SFML/Graphics.hpp>
+#include "screens.hpp"
+#include "cScreen.hpp"
 
-// Here is a small helper for you ! Have a look.
-#include "ResourcePath.hpp"
-
-int main(int, char const**)
+int main(int argc, char** argv)
 {
-    // Create the main window
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
-
-    // Set the Icon
-    sf::Image icon;
-    if (!icon.loadFromFile(resourcePath() + "icon.png")) {
-        return EXIT_FAILURE;
-    }
-    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-
-    // Load a sprite to display
-    sf::Texture texture;
-    if (!texture.loadFromFile(resourcePath() + "cute_image.jpg")) {
-        return EXIT_FAILURE;
-    }
-    sf::Sprite sprite(texture);
-
-    // Create a graphical text to display
-    sf::Font font;
-    if (!font.loadFromFile(resourcePath() + "sansation.ttf")) {
-        return EXIT_FAILURE;
-    }
-    sf::Text text("Hello SFML", font, 50);
-    text.setColor(sf::Color::Black);
-
-    // Load a music to play
-    sf::Music music;
-    if (!music.openFromFile(resourcePath() + "nice_music.ogg")) {
-        return EXIT_FAILURE;
-    }
-
-    // Play the music
-    music.play();
-
-    // Start the game loop
-    while (window.isOpen())
-    {
-        // Process events
-        sf::Event event;
-        while (window.pollEvent(event))
+    //Applications variables
+    std::vector<cScreen*> Screens;// creating an object of type cScreen pointer  that is called screens
+                                  // Without the asterisk we get a nasty error.
+    int screen = 0;
+    
+    //Window creation
+    sf::RenderWindow App(sf::VideoMode(799, 675, 76), "FROGGER DEMO");
+    
+    //Mouse cursor no more visible
+    //App.setMouseCursorVisible(false);
+    
+    //Screens preparations
+    screen_0 s0;
+    Screens.push_back(&s0);
+    screen_1 s1;
+    Screens.push_back(&s1);
+    
+    //Main loop
+    while (screen >= 0)
         {
-            // Close window: exit
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-
-            // Escape pressed: exit
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-                window.close();
-            }
+        screen = Screens[screen]->Run(App);
         }
-
-        // Clear screen
-        window.clear();
-
-        // Draw the sprite
-        window.draw(sprite);
-
-        // Draw the string
-        window.draw(text);
-
-        // Update the window
-        window.display();
-    }
-
+    
     return EXIT_SUCCESS;
 }
+
+
+/*
+ int main(int argc, char** argv)
+ {
+	sf::RenderWindow renderWindow(sf::VideoMode(640, 480), "Frogger Game");
+	//sf::Event event;
+	sf::Font font;
+	font.loadFromFile("arial.ttf");
+	// A Clock starts counting as soon as it's created
+	sf::Clock clock;
+	sf::Text text;
+	
+	text.setFont(font);
+ 
+ 
+	text.setString("Welcome To Frogger");
+	text.setCharacterSize(30);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+	
+	sf::FloatRect bounds(text.getLocalBounds());
+	text.setPosition(renderWindow.getSize().x / 2 - (bounds.left + bounds.width / 2),
+ renderWindow.getSize().y / 2 - (bounds.top + bounds.height / 2));
+ 
+	//renderWindow.draw(text);
+	//renderWindow.display();
+	//renderWindow.clear();
+	
+	while (renderWindow.isOpen())
+	{
+ sf::Event event;
+ while (renderWindow.pollEvent(event))
+ {
+ if (event.type == sf::Event::EventType::Closed)// this closes the window
+ renderWindow.close();
+ 
+ 
+ 
+ 
+ }
+ if (clock.getElapsedTime().asSeconds() > 5.0)
+ {
+ renderWindow.draw(text);
+ renderWindow.display();
+ renderWindow.clear();
+ 
+ }
+ 
+ 
+ 
+ // A microsecond is 1/1,000,000th of a second, 1000 microseconds == 1 millisecond
+ //std::cout << "Elapsed time since previous frame(microseconds): " << clock.getElapsedTime().asMicroseconds() << std::endl;
+ // Start the countdown over.  Think of laps on a stop watch.
+ //clock.restart();
+ 
+ renderWindow.clear();
+ // Draw our text object to the window
+ //renderWindow.draw(text);
+ //renderWindow.display();
+ 
+ 
+	}
+ }
+*/
